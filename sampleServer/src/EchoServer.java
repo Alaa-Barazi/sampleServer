@@ -1,13 +1,9 @@
-import java.io.*;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
-
 import data.Order;
 import data.UpdateOrderDetails;
-import ocsf.server.*;
+import ocsf.server.AbstractServer;
+import ocsf.server.ConnectionToClient;
 
 public class EchoServer extends AbstractServer {
 	/**
@@ -16,40 +12,57 @@ public class EchoServer extends AbstractServer {
 	final public static int DEFAULT_PORT = 5555;
 	private mysqlConnection instance = null;
 	Connection conn = null;
+	private reservationController reservationController;
+	private final ServerController controller;
 
-	public EchoServer(int port) {
+	public EchoServer(int port, ServerController controller) {
 		super(port);
-		this.getDBConnection();
+		reservationController = new reservationController();
+		this.controller = controller;
+		// this.getDBConnection();
+	}
+
+	// Client connection methods
+	@Override
+	protected void clientConnected(ConnectionToClient client) {
+		String ip = client.getInetAddress().getHostAddress();
+		String host = client.getInetAddress().getHostName();
+		controller.updateClientStatus(ip, host, "Connected");
+	}
+
+	@Override
+ protected void clientDisconnected(ConnectionToClient client) {
+		System.out.println("Client disconnected");
+		String ip = client.getInetAddress().getHostAddress();
+		String host = client.getInetAddress().getHostName();
+		controller.updateClientStatus(ip, host, "Disconnected");
 	}
 
 	// Instance methods ************************************************
 	public void getDBConnection() {
 		try {
 			instance = mysqlConnection.getInstance();
-			;
 			conn = instance.getConnection();
 		} catch (Exception e) {
 			System.out.println("Error connecting to DB");
 		}
 	}
 
+	/**
+	 * method for handling client message (by contacting with other controllers)
+	 */
 	@Override
 	protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
 		try {
 			// get all existing orders
 			if (msg.equals("showAllOrders")) {
-				ArrayList<Order> orders = mysqlConnection.printOrders(conn);
+				ArrayList<Order> orders = reservationController.getAllOrders();
 				client.sendToClient(orders);
 			}
 			// update details of order
 			if (msg instanceof UpdateOrderDetails) {
 				UpdateOrderDetails order = (UpdateOrderDetails) msg;
-				int updatedRows = mysqlConnection.updateParkingSpaceANDOrderDate(conn, order.getOrder_number(),
-						order.getParking_space(), order.getOrder_date());
-				if (updatedRows == 1)
-					client.sendToClient("Successfully updated");
-				else if (updatedRows == -1)
-					client.sendToClient("Invalid order number (there isn't any order with this order number)");
+				client.sendToClient(reservationController.updateOrder(order));
 			}
 			// send connection info
 			if (msg.equals("clientDetails")) {
@@ -63,7 +76,6 @@ public class EchoServer extends AbstractServer {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	/**
@@ -91,23 +103,17 @@ public class EchoServer extends AbstractServer {
 	 * @param args[0] The port number to listen on. Defaults to 5555 if no argument
 	 *                is entered.
 	 */
-	public static void main(String[] args) {
-		int port = 0; // Port to listen on
-
-		try {
-			port = Integer.parseInt(args[0]); // Get port from command line
-		} catch (Throwable t) {
-			port = DEFAULT_PORT; // Set port to 5555
-		}
-
-		EchoServer sv = new EchoServer(port);
-
-		try {
-			sv.listen(); // Start listening for connections
-		} catch (Exception ex) {
-			System.out.println("ERROR - Could not listen for clients!");
-		}
-	}
+	/*
+	 * public static void main(String[] args) { int port = 0; // Port to listen on
+	 * 
+	 * try { port = Integer.parseInt(args[0]); // Get port from command line } catch
+	 * (Throwable t) { port = DEFAULT_PORT; // Set port to 5555 }
+	 * 
+	 * EchoServer sv = new EchoServer(port,controller);
+	 * 
+	 * try { sv.listen(); // Start listening for connections } catch (Exception ex)
+	 * { System.out.println("ERROR - Could not listen for clients!"); } }
+	 */
 
 	/*
 	 * private void sentToClient(ConnectionToClient client) { try {

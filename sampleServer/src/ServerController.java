@@ -29,19 +29,21 @@ public class ServerController {
 	}
 
 	public void updateClientStatus(String ip, String hostName, String status) {
-		try {
-			Platform.runLater(() -> {
-				for (ClientStatus c : clients) {
-					if (c.getIp().equals(ip)) {
-						c.setStatus(status);
-						clientTable.refresh();
-						return;
-					}
+		Platform.runLater(() -> {
+			boolean found = false;
+			for (int i = 0; i < clients.size(); i++) {
+				ClientStatus c = clients.get(i);
+				if (c.getIp().equals(ip)) {
+					// Replace the whole object to guarantee UI update
+					clients.set(i, new ClientStatus(ip, hostName, status));
+					found = true;
+					break;
 				}
+			}
+			if (!found) {
 				clients.add(new ClientStatus(ip, hostName, status));
-			});
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+			}
+		});
 	}
+
 }

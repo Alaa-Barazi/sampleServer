@@ -31,7 +31,7 @@ public class EchoServer extends AbstractServer {
 	}
 
 	@Override
- protected void clientDisconnected(ConnectionToClient client) {
+	synchronized protected void clientDisconnected(ConnectionToClient client) {
 		System.out.println("Client disconnected");
 		String ip = client.getInetAddress().getHostAddress();
 		String host = client.getInetAddress().getHostName();
@@ -64,12 +64,22 @@ public class EchoServer extends AbstractServer {
 				UpdateOrderDetails order = (UpdateOrderDetails) msg;
 				client.sendToClient(reservationController.updateOrder(order));
 			}
+			if (msg.equals("connect")) {
+				String ip = client.getInetAddress().getHostAddress();
+				String host = client.getInetAddress().getHostName();
+				controller.updateClientStatus(ip, host, "Connected");
+			}
+
+			if (msg.equals("disconnect")) {
+				String ip = client.getInetAddress().getHostAddress();
+				String host = client.getInetAddress().getHostName();
+				controller.updateClientStatus(ip, host, "Disconnected");
+			}
 			// send connection info
 			if (msg.equals("clientDetails")) {
 				String IP = client.getInetAddress().getHostAddress();
 				String hostName = client.getInetAddress().getHostName();
-				String str = "Client connected:\n" + "IP Address:" + IP + "\nHost Name: " + hostName
-						+ "\nConnection status: " + (client.isAlive() ? "Connected" : "Disconnected");
+				String str = "Client connected:\n" + "IP Address:" + IP + "\nHost Name: " + hostName;
 
 				client.sendToClient(str);
 			}

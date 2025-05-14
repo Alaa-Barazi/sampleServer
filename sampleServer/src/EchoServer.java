@@ -58,7 +58,6 @@ public class EchoServer extends AbstractServer {
 			//check if order with id exists
 			if(msg instanceof String && msg.toString().startsWith("OrderID"))
 			{
-				System.out.println("entered SQL ");
 				int ID;
 				String str;
 				str = msg.toString();
@@ -70,7 +69,7 @@ public class EchoServer extends AbstractServer {
 					client.sendToClient(ord);
 				}
 				else {
-					client.sendToClient("Error");
+					client.sendToClient(null);
 				}
 				
 			}

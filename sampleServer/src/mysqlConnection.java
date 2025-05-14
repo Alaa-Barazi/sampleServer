@@ -14,6 +14,7 @@ import data.Order;
 public class mysqlConnection {
 	private static mysqlConnection instance;
 	private Connection conn;
+
 //Singleton implementation
 	public static mysqlConnection getInstance() {
 		if (instance == null) {
@@ -39,9 +40,10 @@ public class mysqlConnection {
 			conn = DriverManager.getConnection("jdbc:mysql://localhost/parkingdb?serverTimezone=Asia/Jerusalem", "root",
 					"Aa123456");
 			System.out.println("SQL connection succeed");
-			/*LocalDate localDate = LocalDate.of(2024, 4,28);
-			Date today = Date.valueOf(localDate);
-			updateParkingSpaceANDOrderDate(conn, 15, 20, today);*/
+			/*
+			 * LocalDate localDate = LocalDate.of(2024, 4,28); Date today =
+			 * Date.valueOf(localDate); updateParkingSpaceANDOrderDate(conn, 15, 20, today);
+			 */
 
 		} catch (SQLException ex) {/* handle any errors */
 			System.out.println("SQLException: " + ex.getMessage());
@@ -50,58 +52,56 @@ public class mysqlConnection {
 		}
 	}
 
-
 	/**
 	 * Method to check if specific order exists
+	 * 
 	 * @param con
 	 * @param orderNumber number of order to check if it exists
 	 * @return true if order exists otherwise false
 	 */
-	public static boolean checkValidOrderNumber(Connection con,int orderNumber) {
+	public static boolean checkValidOrderNumber(Connection con, int orderNumber) {
 		Statement stmt;
-		boolean exists= false;
+		boolean exists = false;
 		try {
 			stmt = con.createStatement();
-			PreparedStatement ps = con
-					.prepareStatement("SELECT * FROM `order` WHERE order_number=(?)");
+			PreparedStatement ps = con.prepareStatement("SELECT * FROM `order` WHERE order_number=(?)");
 
-		ps.setInt(1, orderNumber);
-		ResultSet rs = ps.executeQuery();
-		exists = rs.next(); // true if result has at least one row
-        rs.close();
+			ps.setInt(1, orderNumber);
+			ResultSet rs = ps.executeQuery();
+			exists = rs.next(); // true if result has at least one row
+			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-	
-	return exists;
+
+		return exists;
 	}
 
 //Method to update parking space and orderDate for order with number orderNumber
 	/**
 	 * @param con
-	 * @param orderNumber number of order to update it's values
+	 * @param orderNumber  number of order to update it's values
 	 * @param parkingSpace new value of parkingSpace
-	 * @param orderDate  new value of orderDate
+	 * @param orderDate    new value of orderDate
 	 * @return number of rows that were updated after executing the query
 	 */
 	public static int updateParkingSpaceANDOrderDate(Connection con, int orderNumber, int parkingSpace,
 			Date orderDate) {
-		int numOfUpdatedRows=0;
+		int numOfUpdatedRows = 0;
 		Statement stmt;
 		try {
-			if(checkValidOrderNumber(con,orderNumber)) {
-			stmt = con.createStatement();
-			PreparedStatement ps = con
-					.prepareStatement("UPDATE `order` SET parking_space=(?),order_date=(?) WHERE order_number=(?)");
+			if (checkValidOrderNumber(con, orderNumber)) {
+				stmt = con.createStatement();
+				PreparedStatement ps = con
+						.prepareStatement("UPDATE `order` SET parking_space=(?),order_date=(?) WHERE order_number=(?)");
 
-			ps.setInt(1, parkingSpace);
-			ps.setDate(2, orderDate);
-			ps.setInt(3, orderNumber);
-			numOfUpdatedRows = ps.executeUpdate();
-			}
-			else {
-				//no order exists with this order number
-				numOfUpdatedRows=-1;
+				ps.setInt(1, parkingSpace);
+				ps.setDate(2, orderDate);
+				ps.setInt(3, orderNumber);
+				numOfUpdatedRows = ps.executeUpdate();
+			} else {
+				// no order exists with this order number
+				numOfUpdatedRows = -1;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -109,9 +109,12 @@ public class mysqlConnection {
 		return numOfUpdatedRows;
 	}
 
-	/**method to return all existing orders from the DB
+	/**
+	 * method to return all existing orders from the DB
+	 * 
 	 * @param con
-	 * @return method returns ArrayList containing all existing orders from the table in DB 
+	 * @return method returns ArrayList containing all existing orders from the
+	 *         table in DB
 	 */
 	public static ArrayList<Order> printOrders(Connection con) {
 
@@ -135,48 +138,38 @@ public class mysqlConnection {
 
 	/**
 	 * method to return specific order based on givin ID
+	 * 
 	 * @param con
 	 * @param orderID orderID to get the relevant order
 	 * @return order object with the given orderID
 	 */
-	public static Order returnOrderByID(Connection con,int orderID)
-	{
+	public static Order returnOrderByID(Connection con, int orderID) {
 		Statement stmt;
 		Order ord = null;
 		try {
 			stmt = con.createStatement();
-			PreparedStatement ps = con
-					.prepareStatement("SELECT * FROM `order` WHERE order_number=(?)");
+			PreparedStatement ps = con.prepareStatement("SELECT * FROM `order` WHERE order_number=(?)");
 
-		ps.setInt(1, orderID);
-		ResultSet rs = ps.executeQuery();
-		if(rs.next()) {
-			System.out.println("row found  IN DB");
-		ord = new Order(rs.getInt(1), rs.getInt(2), rs.getDate(3), rs.getInt(4), rs.getInt(5),
-				rs.getDate(6));
-		}
-        rs.close();
+			ps.setInt(1, orderID);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				ord = new Order(rs.getInt(1), rs.getInt(2), rs.getDate(3), rs.getInt(4), rs.getInt(5), rs.getDate(6));
+			}
+			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		System.out.println(orderID);
-		if(ord!=null)
-			System.out.println(ord);
-		else System.out.println("null...");
-	return ord;
+		return ord;
 	}
-	
-	/*public static void loadDataIntoTableFlights(Connection con1) {
-		Statement stmt;
-		try {
-			stmt = con1.createStatement();
-			// stmt.executeUpdate("create table courses(num int, name VARCHAR(40), semestr
-			// VARCHAR(10));");
-			stmt.executeUpdate("load data local infile \"arrived_flights.txt\" into table Flights");
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}*/
+	/*
+	 * public static void loadDataIntoTableFlights(Connection con1) { Statement
+	 * stmt; try { stmt = con1.createStatement(); // stmt.executeUpdate("create
+	 * table courses(num int, name VARCHAR(40), semestr // VARCHAR(10));"); stmt.
+	 * executeUpdate("load data local infile \"arrived_flights.txt\" into table Flights"
+	 * );
+	 * 
+	 * } catch (SQLException e) { e.printStackTrace(); } }
+	 */
 
 }

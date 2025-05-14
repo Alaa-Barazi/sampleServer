@@ -59,4 +59,16 @@ public class reservationController {
 		}
 		return returnMessageToClient;
 	}
+	
+	public Order getOrderByID(int orderID)
+	{
+		Order order=null;
+		try {
+			order = mysqlConnection.returnOrderByID(conn, orderID);
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return order;
+	}
 }

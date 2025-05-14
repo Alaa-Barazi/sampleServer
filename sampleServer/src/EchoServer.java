@@ -2,6 +2,7 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import data.Order;
 import data.UpdateOrderDetails;
+import data.Order;
 import ocsf.server.AbstractServer;
 import ocsf.server.ConnectionToClient;
 
@@ -54,6 +55,25 @@ public class EchoServer extends AbstractServer {
 	@Override
 	protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
 		try {
+			//check if order with id exists
+			if(msg instanceof String && msg.toString().startsWith("OrderID"))
+			{
+				System.out.println("entered SQL ");
+				int ID;
+				String str;
+				str = msg.toString();
+				String[] result = str.split("\\s");
+				ID = Integer.parseInt(result[1]);
+				Order ord = reservationController.getOrderByID(ID);
+				if(ord!=null)
+				{
+					client.sendToClient(ord);
+				}
+				else {
+					client.sendToClient("Error");
+				}
+				
+			}
 			// get all existing orders
 			if (msg.equals("showAllOrders")) {
 				ArrayList<Order> orders = reservationController.getAllOrders();

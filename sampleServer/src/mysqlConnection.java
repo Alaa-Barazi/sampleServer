@@ -133,6 +133,39 @@ public class mysqlConnection {
 		return allOrders;
 	}
 
+	/**
+	 * method to return specific order based on givin ID
+	 * @param con
+	 * @param orderID orderID to get the relevant order
+	 * @return order object with the given orderID
+	 */
+	public static Order returnOrderByID(Connection con,int orderID)
+	{
+		Statement stmt;
+		Order ord = null;
+		try {
+			stmt = con.createStatement();
+			PreparedStatement ps = con
+					.prepareStatement("SELECT * FROM `order` WHERE order_number=(?)");
+
+		ps.setInt(1, orderID);
+		ResultSet rs = ps.executeQuery();
+		if(rs.next()) {
+			System.out.println("row found  IN DB");
+		ord = new Order(rs.getInt(1), rs.getInt(2), rs.getDate(3), rs.getInt(4), rs.getInt(5),
+				rs.getDate(6));
+		}
+        rs.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		System.out.println(orderID);
+		if(ord!=null)
+			System.out.println(ord);
+		else System.out.println("null...");
+	return ord;
+	}
+	
 	/*public static void loadDataIntoTableFlights(Connection con1) {
 		Statement stmt;
 		try {

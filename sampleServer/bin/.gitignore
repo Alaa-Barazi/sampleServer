@@ -1,8 +1,7 @@
+/server.fxml
 /EchoServer.class
+/Main.class
+/ServerController.class
 /data/
 /mysqlConnection.class
 /reservationController.class
-/server.fxml.fxml
-/server.fxml
-/Main.class
-/ServerController.class

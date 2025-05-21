@@ -1,6 +1,8 @@
+import java.net.ResponseCache;
 import java.sql.Connection;
 import java.util.ArrayList;
 import data.Order;
+import data.ResponseWrapper;
 import data.UpdateOrderDetails;
 import data.Order;
 import ocsf.server.AbstractServer;
@@ -15,10 +17,12 @@ public class EchoServer extends AbstractServer {
 	Connection conn = null;
 	private reservationController reservationController;
 	private final ServerController controller;
+	private subscriberController subscriberController;
 
 	public EchoServer(int port, ServerController controller) {
 		super(port);
 		reservationController = new reservationController();
+		this.subscriberController = new subscriberController();
 		this.controller = controller;
 		// this.getDBConnection();
 	}
@@ -55,23 +59,20 @@ public class EchoServer extends AbstractServer {
 	@Override
 	protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
 		try {
-			//check if order with id exists
-			if(msg instanceof String && msg.toString().startsWith("OrderID"))
-			{
+			// check if order with id exists
+			if (msg instanceof String && msg.toString().startsWith("OrderID")) {
 				int ID;
 				String str;
 				str = msg.toString();
 				String[] result = str.split("\\s");
 				ID = Integer.parseInt(result[1]);
 				Order ord = reservationController.getOrderByID(ID);
-				if(ord!=null)
-				{
+				if (ord != null) {
 					client.sendToClient(ord);
-				}
-				else {
+				} else {
 					client.sendToClient(null);
 				}
-				
+
 			}
 			// get all existing orders
 			if (msg.equals("showAllOrders")) {
@@ -102,6 +103,25 @@ public class EchoServer extends AbstractServer {
 
 				client.sendToClient(str);
 			}
+
+			// login process
+			if (msg instanceof ResponseWrapper) {
+				ResponseWrapper response = (ResponseWrapper) msg;
+				switch (response.getType()) {
+				// login for subscriber
+				case "SUBSCRIBER_LOGIN": {
+					boolean result = subscriberController.validSubscriber(response);
+					client.sendToClient(result);
+					break;
+				}
+				case "WORKERS_LOGIN": {
+					subscriberController.validSubscriber(response);
+					break;
+				}
+
+				}
+			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -132,7 +152,6 @@ public class EchoServer extends AbstractServer {
 	 * @param args[0] The port number to listen on. Defaults to 5555 if no argument
 	 *                is entered.
 	 */
-	
 
 	// In handle message from client - take care of the msg according to its type
 	// (arrayList of students and so on)

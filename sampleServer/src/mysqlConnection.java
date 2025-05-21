@@ -162,14 +162,7 @@ public class mysqlConnection {
 		return ord;
 	}
 
-	/*
-	 * public static void loadDataIntoTableFlights(Connection con1) { Statement
-	 * stmt; try { stmt = con1.createStatement(); // stmt.executeUpdate("create
-	 * table courses(num int, name VARCHAR(40), semestr // VARCHAR(10));"); stmt.
-	 * executeUpdate("load data local infile \"arrived_flights.txt\" into table Flights"
-	 * );
-	 * 
-	 * } catch (SQLException e) { e.printStackTrace(); } }
-	 */
+	
+	
 
 }

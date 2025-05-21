@@ -1,10 +1,10 @@
-import java.net.ResponseCache;
 import java.sql.Connection;
 import java.util.ArrayList;
+
+import data.Login;
 import data.Order;
 import data.ResponseWrapper;
 import data.UpdateOrderDetails;
-import data.Order;
 import ocsf.server.AbstractServer;
 import ocsf.server.ConnectionToClient;
 
@@ -17,12 +17,12 @@ public class EchoServer extends AbstractServer {
 	Connection conn = null;
 	private reservationController reservationController;
 	private final ServerController controller;
-	private subscriberController subscriberController;
+	private LoginController loginController;
 
 	public EchoServer(int port, ServerController controller) {
 		super(port);
 		reservationController = new reservationController();
-		this.subscriberController = new subscriberController();
+		this.loginController = new LoginController();
 		this.controller = controller;
 		// this.getDBConnection();
 	}
@@ -59,6 +59,7 @@ public class EchoServer extends AbstractServer {
 	@Override
 	protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
 		try {
+		
 			// check if order with id exists
 			if (msg instanceof String && msg.toString().startsWith("OrderID")) {
 				int ID;
@@ -106,20 +107,14 @@ public class EchoServer extends AbstractServer {
 
 			// login process
 			if (msg instanceof ResponseWrapper) {
+				System.out.println("Entered login");
 				ResponseWrapper response = (ResponseWrapper) msg;
-				switch (response.getType()) {
-				// login for subscriber
-				case "SUBSCRIBER_LOGIN": {
-					boolean result = subscriberController.validSubscriber(response);
-					client.sendToClient(result);
-					break;
-				}
-				case "WORKERS_LOGIN": {
-					subscriberController.validSubscriber(response);
-					break;
-				}
+				Login details = (Login) response.getData();
+				String role = loginController.validateLogin(details.getUsername(), details.getPasswrod());
+				ResponseWrapper responseToClient = new ResponseWrapper("LOGIN_RESPONSE", role); // role = "worker" /
+				// "subscriber" / "invalid"
+				client.sendToClient(responseToClient);
 
-				}
 			}
 
 		} catch (Exception e) {

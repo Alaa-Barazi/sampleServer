@@ -7,7 +7,7 @@ import java.sql.Statement;
 import data.Login;
 import data.ResponseWrapper;
 
-public class subscriberController {
+public class LoginController {
 	private mysqlConnection instance = null;
 	Connection conn = null;
 
@@ -20,7 +20,7 @@ public class subscriberController {
 		}
 	}
 
-	public subscriberController() {
+	public LoginController() {
 		this.getDBConnection();
 	}
 
@@ -52,4 +52,42 @@ public class subscriberController {
 		}
 		return exists;
 	}
+
+	public String validateLogin(String username, String password) {
+		System.out.println("Entered sql");
+		String sqlWorker = "SELECT * FROM workers WHERE BINARY username=? AND BINARY password=?";
+		String sqlSubscriber = "SELECT * FROM subscribers WHERE BINARY username=? AND BINARY password=?";
+		String sqlManager = "SELECT * FROM managers WHERE BINARY username=? AND BINARY password=?";
+		try {
+			PreparedStatement psWorker = conn.prepareStatement(sqlWorker);
+			psWorker.setString(1, username);
+			psWorker.setString(2, password);
+			ResultSet rsWorker = psWorker.executeQuery();
+			if (rsWorker.next()) {
+				return "worker";
+			}
+
+			PreparedStatement psSub = conn.prepareStatement(sqlSubscriber);
+			psSub.setString(1, username);
+			psSub.setString(2, password);
+			ResultSet rsSub = psSub.executeQuery();
+			if (rsSub.next()) {
+				return "subscriber";
+			}
+			
+			PreparedStatement psMng = conn.prepareStatement(sqlManager);
+			psMng.setString(1, username);
+			psMng.setString(2, password);
+			ResultSet rsMng = psMng.executeQuery();
+			if (rsMng.next()) {
+				return "manager";
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return "invalid";
+	}
+
 }

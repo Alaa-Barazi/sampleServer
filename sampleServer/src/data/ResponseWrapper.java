@@ -19,5 +19,11 @@ public class ResponseWrapper implements Serializable {
 	public Object getData() {
 		return data;
 	}
+	
+
+	@Override
+	public String toString() {
+		return "ResponseWrapper [type=" + type + ", data=" + data + "]";
+	}
 
 }

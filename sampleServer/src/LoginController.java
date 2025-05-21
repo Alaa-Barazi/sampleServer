@@ -53,8 +53,14 @@ public class LoginController {
 		return exists;
 	}
 
+	/**
+	 * method for checking if any user exists (correct username & password) if so retreive type of user(
+	 * subscriber, parking attendant, manager) 
+	 * @param username username to check
+	 * @param password password to check
+	 * @return type of user (subscriber, parking attendant, manager) if doesn't exist - invalid
+	 */
 	public String validateLogin(String username, String password) {
-		System.out.println("Entered sql");
 		String sqlWorker = "SELECT * FROM workers WHERE BINARY username=? AND BINARY password=?";
 		String sqlSubscriber = "SELECT * FROM subscribers WHERE BINARY username=? AND BINARY password=?";
 		String sqlManager = "SELECT * FROM managers WHERE BINARY username=? AND BINARY password=?";

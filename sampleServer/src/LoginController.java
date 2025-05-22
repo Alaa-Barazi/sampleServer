@@ -54,11 +54,13 @@ public class LoginController {
 	}
 
 	/**
-	 * method for checking if any user exists (correct username & password) if so retreive type of user(
-	 * subscriber, parking attendant, manager) 
+	 * method for checking if any user exists (correct username & password) if so
+	 * retreive type of user( subscriber, parking attendant, manager)
+	 * 
 	 * @param username username to check
 	 * @param password password to check
-	 * @return type of user (subscriber, parking attendant, manager) if doesn't exist - invalid
+	 * @return type of user (subscriber, parking attendant, manager) if doesn't
+	 *         exist - invalid
 	 */
 	public String validateLogin(String username, String password) {
 		String sqlWorker = "SELECT * FROM workers WHERE BINARY username=? AND BINARY password=?";
@@ -80,7 +82,7 @@ public class LoginController {
 			if (rsSub.next()) {
 				return "subscriber";
 			}
-			
+
 			PreparedStatement psMng = conn.prepareStatement(sqlManager);
 			psMng.setString(1, username);
 			psMng.setString(2, password);

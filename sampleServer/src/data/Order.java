@@ -19,12 +19,12 @@ public class Order implements Serializable {
 
 	/**
 	 * 
-	 * @param parking_space value of parking spot 
-	 * @param order_number value of parking spot 
-	 * @param order_date  value of order date
-	 * @param confirmation_code  value of confirmation code 
-	 * @param subscriber_id  value of subscriber id
-	 * @param date_of_placing_an_order  value of placing order date 
+	 * @param parking_space            value of parking spot
+	 * @param order_number             value of parking spot
+	 * @param order_date               value of order date
+	 * @param confirmation_code        value of confirmation code
+	 * @param subscriber_id            value of subscriber id
+	 * @param date_of_placing_an_order value of placing order date
 	 */
 	public Order(int parking_space, int order_number, Date order_date, int confirmation_code, int subscriber_id,
 			Date date_of_placing_an_order) {
@@ -46,6 +46,7 @@ public class Order implements Serializable {
 
 	/**
 	 * set new value for param
+	 * 
 	 * @param parking_space
 	 */
 	public void setParking_space(int parking_space) {
@@ -61,6 +62,7 @@ public class Order implements Serializable {
 
 	/**
 	 * set new value for param
+	 * 
 	 * @param order_number
 	 */
 	public void setOrder_number(int order_number) {
@@ -76,6 +78,7 @@ public class Order implements Serializable {
 
 	/**
 	 * set new value for param
+	 * 
 	 * @param order_date
 	 */
 	public void setOrder_date(Date order_date) {
@@ -90,7 +93,8 @@ public class Order implements Serializable {
 	}
 
 	/**
-	 *  set new value for param
+	 * set new value for param
+	 * 
 	 * @param confirmation_code
 	 */
 	public void setConfirmation_code(int confirmation_code) {
@@ -105,7 +109,8 @@ public class Order implements Serializable {
 	}
 
 	/**
-	 *  set new value for param
+	 * set new value for param
+	 * 
 	 * @param subscriber_id
 	 */
 	public void setSubscriber_id(int subscriber_id) {
@@ -121,6 +126,7 @@ public class Order implements Serializable {
 
 	/**
 	 * set new value for param
+	 * 
 	 * @param date_of_placing_an_order
 	 */
 	public void setDate_of_placing_an_order(Date date_of_placing_an_order) {
@@ -128,7 +134,7 @@ public class Order implements Serializable {
 	}
 
 	/**
-	 *returns string that contains all information about the order
+	 * returns string that contains all information about the order
 	 */
 	@Override
 	public String toString() {
@@ -136,6 +142,5 @@ public class Order implements Serializable {
 				+ "\n confirmation_code=" + confirmation_code + ", subscriber_id=" + subscriber_id
 				+ ", date_of_placing_an_order=" + date_of_placing_an_order + "\n";
 	}
-
 
 }

@@ -42,6 +42,7 @@ public class reservationController {
 
 	/**
 	 * method for updating specific order
+	 * 
 	 * @param order object with new values for the order
 	 * @return string that will assign status of the operation
 	 */
@@ -59,14 +60,12 @@ public class reservationController {
 		}
 		return returnMessageToClient;
 	}
-	
-	public Order getOrderByID(int orderID)
-	{
-		Order order=null;
+
+	public Order getOrderByID(int orderID) {
+		Order order = null;
 		try {
 			order = mysqlConnection.returnOrderByID(conn, orderID);
-		}catch(Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return order;

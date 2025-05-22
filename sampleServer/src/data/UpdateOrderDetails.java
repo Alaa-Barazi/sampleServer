@@ -1,4 +1,5 @@
 package data;
+
 import java.io.Serializable;
 import java.sql.Date;
 
@@ -14,9 +15,10 @@ public class UpdateOrderDetails implements Serializable {
 
 	/**
 	 * constructor
-	 * @param order_number value of order number
+	 * 
+	 * @param order_number  value of order number
 	 * @param parking_space value of parking space
-	 * @param order_date value of order date
+	 * @param order_date    value of order date
 	 */
 	public UpdateOrderDetails(int order_number, int parking_space, Date order_date) {
 		this.order_number = order_number;
@@ -33,6 +35,7 @@ public class UpdateOrderDetails implements Serializable {
 
 	/**
 	 * set new value for param
+	 * 
 	 * @param order_number
 	 */
 	public void setOrdחer_number(int order_number) {
@@ -48,6 +51,7 @@ public class UpdateOrderDetails implements Serializable {
 
 	/**
 	 * set new value for param
+	 * 
 	 * @param parking_space
 	 */
 	public void setParking_space(int parking_space) {
@@ -62,7 +66,8 @@ public class UpdateOrderDetails implements Serializable {
 	}
 
 	/**
-     * set new value for param
+	 * set new value for param
+	 * 
 	 * @param order_date
 	 */
 	public void setOrder_date(Date order_date) {
@@ -70,7 +75,7 @@ public class UpdateOrderDetails implements Serializable {
 	}
 
 	/**
-	 *returns string that contains all information about the updateOrder
+	 * returns string that contains all information about the updateOrder
 	 */
 	@Override
 	public String toString() {

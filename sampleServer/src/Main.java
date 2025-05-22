@@ -4,7 +4,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-
+//test
 
 public class Main extends Application {
 	@Override
@@ -15,8 +15,6 @@ public class Main extends Application {
 
 		EchoServer server = new EchoServer(5555, controller);
 		server.listen();
-		
-		
 
 		primaryStage.setTitle("Server Status");
 		primaryStage.setScene(new Scene(root));
